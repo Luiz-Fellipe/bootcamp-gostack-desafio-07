@@ -1,8 +1,28 @@
 import React from 'react';
-import { View } from 'react-native';
 
-// import { Container } from './styles';
+import CartProduct from '../../components/CartProduct';
+
+import {
+  Container,
+  Total,
+  TotalPrice,
+  TotalText,
+  ButtonRequestFinished,
+  ButtonRequestFinishedText,
+} from './styles';
 
 export default function Cart() {
-  return <View />;
+  return (
+    <Container>
+      <CartProduct />
+      <CartProduct />
+      <Total>
+        <TotalText>TOTAL</TotalText>
+        <TotalPrice>R$ 980,00</TotalPrice>
+      </Total>
+      <ButtonRequestFinished>
+        <ButtonRequestFinishedText>FINALIZAR PEDIDO</ButtonRequestFinishedText>
+      </ButtonRequestFinished>
+    </Container>
+  );
 }

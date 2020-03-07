@@ -3,4 +3,5 @@ export default {
   dark: '#191920',
   darkMenu: '#141419',
   white: '#FFF',
+  grey: '#EEEEEE',
 };
