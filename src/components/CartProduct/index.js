@@ -22,16 +22,16 @@ import {
   ProductItem,
 } from './styles';
 
-function CartProduct({ product, removeFromCart, updateAmountSuccess }) {
+function CartProduct({ product, removeFromCart, updateAmountRequest }) {
   const { item } = product;
   console.tron.log(item);
 
   function increment(item) {
-    updateAmountSuccess(item.id, item.amount + 1);
+    updateAmountRequest(item.id, item.amount + 1);
   }
 
   function decrement(item) {
-    updateAmountSuccess(item.id, item.amount - 1);
+    updateAmountRequest(item.id, item.amount - 1);
   }
 
   return (
