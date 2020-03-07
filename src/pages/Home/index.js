@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import { FlatList } from 'react-native';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import * as CartActions from '../../store/modules/cart/actions';
+import api from '../../services/api';
+import { formatPrice } from '../../util/format';
 import {
   Container,
   ItemList,
@@ -13,42 +18,35 @@ import {
   ItemButtonAmountText,
 } from './styles';
 
-export default class Home extends Component {
+class Home extends Component {
   state = {
-    products: [
-      {
-        id: 1,
-        title: 'Tênis muito legal',
-        price: '179,90',
-        url:
-          'https://static.netshoes.com.br/produtos/tenis-de-caminhada-leve-confortavel/06/E74-0492-006/E74-0492-006_zoom1.jpg?ims=326x',
-      },
-      {
-        id: 2,
-        title: 'Tênis muito legal mas muito legal mesmo',
-        price: '179,90',
-        url:
-          'https://static.netshoes.com.br/produtos/tenis-de-caminhada-leve-confortavel/06/E74-0492-006/E74-0492-006_zoom1.jpg?ims=326x',
-      },
-      {
-        id: 3,
-        title: 'Tênis muito legal',
-        price: '179,90',
-        url:
-          'https://static.netshoes.com.br/produtos/tenis-de-caminhada-leve-confortavel/06/E74-0492-006/E74-0492-006_zoom1.jpg?ims=326x',
-      },
-      {
-        id: 4,
-        title: 'Tênis muito legal',
-        price: '179,90',
-        url:
-          'https://static.netshoes.com.br/produtos/tenis-de-caminhada-leve-confortavel/06/E74-0492-006/E74-0492-006_zoom1.jpg?ims=326x',
-      },
-    ],
+    products: [],
+  };
+
+  async componentDidMount() {
+    try {
+      const response = await api.get('/products');
+
+      const data = response.data.map(product => ({
+        ...product,
+        priceFormatted: formatPrice(product.price),
+      }));
+
+      this.setState({ products: data });
+    } catch (error) {
+      console.tron.log(error);
+    }
+  }
+
+  handleAddProduct = product => {
+    const { addToCart } = this.props;
+
+    addToCart(product);
   };
 
   render() {
     const { products } = this.state;
+    const { amount } = this.props;
     return (
       <Container>
         <FlatList
@@ -56,13 +54,15 @@ export default class Home extends Component {
           data={products}
           renderItem={({ item }) => (
             <ItemList>
-              <ItemImage source={{ uri: item.url }} />
+              <ItemImage source={{ uri: item.image }} />
               <ItemTitle>{item.title}</ItemTitle>
-              <ItemPrice>R$ {item.price}</ItemPrice>
-              <ItemButton>
+              <ItemPrice>{item.priceFormatted}</ItemPrice>
+              <ItemButton onPress={() => this.handleAddProduct(item)}>
                 <ItemButtonAmount>
                   <Icon name="add-shopping-cart" color="#FFF" size={20} />
-                  <ItemButtonAmountText>3</ItemButtonAmountText>
+                  <ItemButtonAmountText>
+                    {amount[item.id] || 0}
+                  </ItemButtonAmountText>
                 </ItemButtonAmount>
                 <ItemButtonText>ADICIONAR</ItemButtonText>
               </ItemButton>
@@ -75,3 +75,14 @@ export default class Home extends Component {
     );
   }
 }
+const mapStateToProps = state => ({
+  amount: state.cart.reduce((amount, product) => {
+    amount[product.id] = product.amount;
+    return amount;
+  }, {}),
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(CartActions, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

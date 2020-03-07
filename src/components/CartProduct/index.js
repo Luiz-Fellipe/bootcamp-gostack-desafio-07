@@ -1,7 +1,10 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import colors from '../../styles/colors';
+
+import * as CartActions from '../../store/modules/cart/actions';
 
 import {
   ProductContainer,
@@ -19,44 +22,66 @@ import {
   ProductItem,
 } from './styles';
 
-export default function CartProduct() {
+function CartProduct({ product, removeFromCart, updateAmountSuccess }) {
+  const { item } = product;
+  console.tron.log(item);
+
+  function increment(item) {
+    updateAmountSuccess(item.id, item.amount + 1);
+  }
+
+  function decrement(item) {
+    updateAmountSuccess(item.id, item.amount - 1);
+  }
+
   return (
     <ProductItem>
       <ProductContainer>
         <ProductInfo>
           <ProductInfoImage
             source={{
-              uri:
-                'https://static.netshoes.com.br/produtos/tenis-de-caminhada-leve-confortavel/06/E74-0492-006/E74-0492-006_zoom1.jpg?ims=326x',
+              uri: item.image,
             }}
           />
           <ProductInfoDetails>
-            <ProductInfoDetailsTitle>
-              Tênis muito legal muito dahora mesmo meu deus
-            </ProductInfoDetailsTitle>
-            <ProductInfoDetailsPrice>R$ 179,90</ProductInfoDetailsPrice>
+            <ProductInfoDetailsTitle>{item.title}</ProductInfoDetailsTitle>
+            <ProductInfoDetailsPrice>
+              {item.priceFormatted}
+            </ProductInfoDetailsPrice>
           </ProductInfoDetails>
         </ProductInfo>
-        <ProductInfoDelete onPress={() => {}}>
+        <ProductInfoDelete
+          onPress={() => {
+            removeFromCart(item.id);
+          }}
+        >
           <Icon name="delete-forever" size={24} color={colors.primary} />
         </ProductInfoDelete>
       </ProductContainer>
       <ProductControls>
         <ProductControlsInputGroup>
-          <ProductControlsButton>
+          <ProductControlsButton onPress={() => decrement(item)}>
             <Icon
               name="remove-circle-outline"
               size={20}
               color={colors.primary}
             />
           </ProductControlsButton>
-          <ProductControlsInput editable={false} defaultValue="3" />
-          <ProductControlsButton>
+          <ProductControlsInput
+            editable={false}
+            defaultValue={`${item.amount}`}
+          />
+          <ProductControlsButton onPress={() => increment(item)}>
             <Icon name="add-circle-outline" size={20} color={colors.primary} />
           </ProductControlsButton>
         </ProductControlsInputGroup>
-        <ProductControlsSubTotal>R$ 589,90</ProductControlsSubTotal>
+        <ProductControlsSubTotal>{item.subTotal}</ProductControlsSubTotal>
       </ProductControls>
     </ProductItem>
   );
 }
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(CartActions, dispatch);
+
+export default connect(null, mapDispatchToProps)(CartProduct);

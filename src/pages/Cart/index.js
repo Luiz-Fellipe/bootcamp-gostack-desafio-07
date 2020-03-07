@@ -1,7 +1,8 @@
 import React from 'react';
 
+import { connect } from 'react-redux';
 import CartProduct from '../../components/CartProduct';
-
+import { formatPrice } from '../../util/format';
 import {
   Container,
   Total,
@@ -9,16 +10,21 @@ import {
   TotalText,
   ButtonRequestFinished,
   ButtonRequestFinishedText,
+  ProductView,
 } from './styles';
 
-export default function Cart() {
+function Cart({ cart, total }) {
   return (
     <Container>
-      <CartProduct />
-      <CartProduct />
+      <ProductView
+        data={cart}
+        renderItem={item => <CartProduct product={item} />}
+        keyExtractor={item => String(item.id)}
+        showsVerticalScrollIndicator={false}
+      />
       <Total>
         <TotalText>TOTAL</TotalText>
-        <TotalPrice>R$ 980,00</TotalPrice>
+        <TotalPrice>{total}</TotalPrice>
       </Total>
       <ButtonRequestFinished>
         <ButtonRequestFinishedText>FINALIZAR PEDIDO</ButtonRequestFinishedText>
@@ -26,3 +32,17 @@ export default function Cart() {
     </Container>
   );
 }
+
+const mapStateToProps = state => ({
+  cart: state.cart.map(product => ({
+    ...product,
+    subTotal: formatPrice(product.price * product.amount),
+  })),
+  total: formatPrice(
+    state.cart.reduce((total, product) => {
+      return total + product.price * product.amount;
+    }, 0)
+  ),
+});
+
+export default connect(mapStateToProps)(Cart);

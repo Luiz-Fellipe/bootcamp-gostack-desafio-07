@@ -24,6 +24,7 @@ export const ProductInfoImage = styled.Image`
 
 export const ProductInfoDetails = styled.View`
   max-width: 163px;
+  margin-left: 5px;
 `;
 
 export const ProductInfoDetailsTitle = styled.Text`

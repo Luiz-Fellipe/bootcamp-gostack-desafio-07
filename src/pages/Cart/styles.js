@@ -2,6 +2,10 @@ import styled from 'styled-components/native';
 
 import colors from '../../styles/colors';
 
+export const ProductView = styled.FlatList`
+  max-height: 300px;
+`;
+
 export const Container = styled.View`
   margin: 20px;
   background: ${colors.white};
