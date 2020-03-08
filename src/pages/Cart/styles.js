@@ -43,3 +43,14 @@ export const ButtonRequestFinishedText = styled.Text`
   color: #fff;
   font-weight: bold;
 `;
+
+export const CartIsEmpty = styled.View`
+  justify-content: center;
+  align-items: center;
+`;
+
+export const CartIsEmptyText = styled.Text`
+  font-weight: bold;
+  font-size: 20px;
+  margin-top: 10px;
+`;
