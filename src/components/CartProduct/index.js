@@ -2,8 +2,8 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import colors from '../../styles/colors';
-
 import * as CartActions from '../../store/modules/cart/actions';
 
 import {
@@ -26,12 +26,12 @@ function CartProduct({ product, removeFromCart, updateAmountRequest }) {
   const { item } = product;
   console.tron.log(item);
 
-  function increment(item) {
-    updateAmountRequest(item.id, item.amount + 1);
+  function increment(prod) {
+    updateAmountRequest(prod.id, prod.amount + 1);
   }
 
-  function decrement(item) {
-    updateAmountRequest(item.id, item.amount - 1);
+  function decrement(prod) {
+    updateAmountRequest(prod.id, prod.amount - 1);
   }
 
   return (
@@ -80,6 +80,21 @@ function CartProduct({ product, removeFromCart, updateAmountRequest }) {
     </ProductItem>
   );
 }
+
+CartProduct.propTypes = {
+  product: PropTypes.shape({
+    item: PropTypes.shape({
+      id: PropTypes.number,
+      image: PropTypes.string,
+      title: PropTypes.string,
+      subTotal: PropTypes.string,
+      amount: PropTypes.string,
+      priceFormatted: PropTypes.string,
+    }),
+  }).isRequired,
+  removeFromCart: PropTypes.func.isRequired,
+  updateAmountRequest: PropTypes.func.isRequired,
+};
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(CartActions, dispatch);

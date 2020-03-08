@@ -2,9 +2,9 @@ import React from 'react';
 
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import PropTypes from 'prop-types';
 import CartProduct from '../../components/CartProduct';
 import { formatPrice } from '../../util/format';
-import colors from '../../styles/colors';
 
 import {
   Container,
@@ -42,7 +42,7 @@ function Cart({ cart, total }) {
       ) : (
         <>
           <CartIsEmpty>
-            <Icon name="sentiment-dissatisfied" size={60} color="#333" />
+            <Icon name="remove-shopping-cart" size={60} color="#999" />
             <CartIsEmptyText>Seu carrinho está vazio</CartIsEmptyText>
           </CartIsEmpty>
         </>
@@ -50,6 +50,11 @@ function Cart({ cart, total }) {
     </Container>
   );
 }
+
+Cart.propTypes = {
+  cart: PropTypes.array.isRequired,
+  total: PropTypes.string.isRequired,
+};
 
 const mapStateToProps = state => ({
   cart: state.cart.map(product => ({

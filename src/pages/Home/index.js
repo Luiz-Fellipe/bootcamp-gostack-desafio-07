@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as CartActions from '../../store/modules/cart/actions';
 import api from '../../services/api';
@@ -19,6 +20,11 @@ import {
 } from './styles';
 
 class Home extends Component {
+  static propTypes = {
+    addToCartRequest: PropTypes.func.isRequired,
+    amount: PropTypes.shape().isRequired,
+  };
+
   state = {
     products: [],
   };
@@ -59,6 +65,7 @@ class Home extends Component {
               <ItemPrice>{item.priceFormatted}</ItemPrice>
               <ItemButton onPress={() => this.handleAddProduct(item)}>
                 <ItemButtonAmount>
+                  {}
                   <Icon name="add-shopping-cart" color="#FFF" size={20} />
                   <ItemButtonAmountText>
                     {amount[item.id] || 0}
